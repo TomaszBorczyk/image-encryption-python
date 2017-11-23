@@ -1,10 +1,13 @@
 import json
 from fractions import gcd
 from Crypto.Util import number
-
+from keysModels import RSAPublicKey, RSAPrivateKey
+from keysBase64 import encodeAndSavePrivate, encodeAndSavePublic
 BITS = 1024
 # E = 65537
 E = 3
+
+
 
 def lcm(_a, _b):
     return (_a *_b) // gcd(_a, _b)
@@ -33,13 +36,14 @@ def generateKeys():
     n = p * q
     phi = lcm(p-1, q-1)
     d = mulinv(E, phi)
-    return ((n, d), (n, E))
+    exponent1 = d % (p-1)
+    exponent2 = d % (q-1)
+    coefficient = (1/q) % p
+    return (RSAPrivateKey(n, E, d, p, q, exponent1, exponent2, coefficient), RSAPublicKey(n, E))
 
 def saveKeysToFiles(private, public):
-    n, d, = private
-    _, e = public
-    privateJson = {'n': n, 'd': d}
-    publicJson = {'n': n, 'e': e}
+    privateJson = {'n': private.n, 'd': private.d}
+    publicJson = {'n': public.n, 'e': public.e}
     
     with open('keys/pub.rsa.json', 'w') as outfile:
         json.dump(publicJson, outfile)
@@ -48,7 +52,10 @@ def saveKeysToFiles(private, public):
         json.dump(privateJson, outfile)
 
 
-def main():
+def generate():
     private, public = generateKeys()
+    encodeAndSavePrivate(private)
+    encodeAndSavePublic(public)
     # print(private, public)
-    saveKeysToFiles(private, public)
+    # saveKeysToFiles(private, public)
+    # encoding(private, public)
