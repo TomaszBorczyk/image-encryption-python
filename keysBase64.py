@@ -28,20 +28,14 @@ class RSAPrivateKeyASN1(Sequence):
 
 
 def encodeAndSavePublic(public):
-    n, e = public.n, public.e
-
     asn1Public = RSAPublicKeyASN1()
-    asn1Public['modulus'] = n
-    asn1Public['publicExponent'] = e
-    # print(asn1Public)
-    py_public = encode(asn1Public)
-    # print(py_public)
+    asn1Public['modulus'] = public.n
+    asn1Public['publicExponent'] = public.e
+
     der_serialization = der_encoder(asn1Public)
-    # print(der_serialization)
     b64_serialization = '-----BEGIN RSA PUBLIC KEY-----\n'
     b64_serialization += b64encode(der_serialization).decode('utf-8')
     b64_serialization += '\n-----END RSA PUBLIC KEY-----'
-    # print(b64_serialization)
     with open('keys/pub.rsa', 'w') as pub:
         pub.write(b64_serialization)
 
@@ -56,18 +50,12 @@ def encodeAndSavePrivate(private):
     asn1Private['exponent2'] = private.exponent2
     asn1Private['coefficient'] = private.coefficient
 
-    # print(asn1Public)
-    py_private = encode(asn1Private)
-    # print(py_public)
     der_serialization = der_encoder(asn1Private)
-    # print(der_serialization)
     b64_serialization = '-----BEGIN RSA PRIVATE KEY-----\n'
     b64_serialization += b64encode(der_serialization).decode('utf-8')
     b64_serialization += '\n-----END RSA PRIVATE KEY-----'
-    # print(b64_serialization)
     with open('keys/id.rsa', 'w') as priv:
         priv.write(b64_serialization)
-
 
 def loadPublicKey():
     with open('keys/pub.rsa', 'r') as pub:

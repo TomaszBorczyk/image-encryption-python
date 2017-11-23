@@ -7,8 +7,6 @@ BITS = 1024
 # E = 65537
 E = 3
 
-
-
 def lcm(_a, _b):
     return (_a *_b) // gcd(_a, _b)
 
@@ -40,22 +38,3 @@ def generateKeys():
     exponent2 = d % (q-1)
     coefficient = (1/q) % p
     return (RSAPrivateKey(n, E, d, p, q, exponent1, exponent2, coefficient), RSAPublicKey(n, E))
-
-def saveKeysToFiles(private, public):
-    privateJson = {'n': private.n, 'd': private.d}
-    publicJson = {'n': public.n, 'e': public.e}
-    
-    with open('keys/pub.rsa.json', 'w') as outfile:
-        json.dump(publicJson, outfile)
-
-    with open('keys/priv.rsa.json', 'w') as outfile:
-        json.dump(privateJson, outfile)
-
-
-def generate():
-    private, public = generateKeys()
-    encodeAndSavePrivate(private)
-    encodeAndSavePublic(public)
-    # print(private, public)
-    # saveKeysToFiles(private, public)
-    # encoding(private, public)

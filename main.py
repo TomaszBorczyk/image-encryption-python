@@ -5,17 +5,15 @@ from openKeys import *
 from generateKeys import *
 from keysBase64 import *
 
-
 decision = input('Generate, Encrypt or decrypt?')
-# generate
+# generate keys
 if decision is 'g':
-    generate()
-    # loadPubKey()
-    # print(loadPublicKey())
+    private, public = generateKeys()
+    encodeAndSavePrivate(private)
+    encodeAndSavePublic(public)
 
-
+# encrypt
 if decision is 'e':
-    # encrypt
     public = loadPublicKey()
     # image = openImage('images/lena-greyscale-small.png')
     # # image.show()
@@ -28,8 +26,8 @@ if decision is 'e':
     with open('test', 'w') as outfile:
         outfile.write(str(encryptedImg))
 
+# decrypt
 if decision is 'd':
-    # decrypt
     private = loadPrivateKey()
     encryptedImg = open('test', 'r').read()
     print(encryptedImg)
