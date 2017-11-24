@@ -1,7 +1,8 @@
 from keysModels import RSAPublicKey, RSAPrivateKey
 import math
-
-BITS = 1233
+import sys
+# BITS = 1233 # for 4096 RSA
+BITS = 307 # for 1024 RSA
 
 def toHex(msg):
     return ''.join(format(ord(c), 'x') for c in msg)
@@ -44,7 +45,6 @@ def splitToBlocks(asciiMsg):
 
 def encryptBlock(block, publicKey):
     val = pow(block, publicKey.e, publicKey.n)
-    # print('block', val)
     return val
 
 def encryptBlockMessage(blocks, publicKey):
@@ -55,7 +55,6 @@ def encryptLargeFile(msg, publicKey):
     blocks = splitToBlocks(asciiMsg)
     encryptedMsg = encryptBlockMessage(blocks, publicKey)
     print(encryptedMsg)
-    # print('BIT LENGTH OF ENCRYPTED VALUE', int.bit_length(int(encryptedMsg)))
     return encryptedMsg
 
 
@@ -66,17 +65,27 @@ def decryptBlock(block, privateKey):
     return decryptedVal.zfill(BITS)
 
 def decryptBlockMessage(blocks, privateKey):
-    return ''.join(str(decryptBlock(int(block), privateKey)) for block in blocks)
+    decrypted, blocksAmount = '', len(blocks)
+    print('0%')
+    for i, block in enumerate(blocks):
+        decrypted = decrypted + str(decryptBlock(int(block), privateKey))
+        # print(str(math.floor((i/blocksAmount)*100))+'%')
+        progres = math.floor((i/blocksAmount)*100
+        sys.stdout.write("Download progress: %d%%   \r", progress)
+        sys.stdout.flush()
+    return decrypted
+    print('100%')
+  
+    # return ''.join(str(decryptBlock(int(block), privateKey)) for block in blocks)
 
 def decryptLargeFile(msg, privateKey):
     length, size = len(msg), BITS
-    # blocks = [ msg[i:i+size] for i in range(0, length, size)]
     blocks = msg.split('\n')
-    print('encrypted blocks', blocks)
+    # print('encrypted blocks', blocks)
     decryptedMsg = decryptBlockMessage(blocks, privateKey)
-    print('decrypted msg', decryptedMsg)
+    # print('decrypted msg', decryptedMsg)
     text =  asciiToText(decryptedMsg)
-    print(text)
+    # print(text)
     return text
     
 

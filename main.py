@@ -8,76 +8,11 @@ from generateKeys import *
 from keysBase64 import *
 from PIL import Image
 
+a = loadPublicKey()
+print('len',len(str(a.n)))
+print('bytecount', int.bit_length(a.n))
 
 decision = input('Generate, Encrypt or decrypt?')
-if decision is 'q':
-
-    # png beda przechowywane w taki sposob
-    with open('images/lena-greyscale-small.png', "rb") as imageFile:
-        s = base64.b64encode(imageFile.read())
-        print(s)
-
-    with open('images/new.png', "wb") as imageFile:
-        imageFile.write(base64.b64decode(s))
-
-    # fh = open('images/new.png', "wb")
-    # fh.write(s.decode('base64'))
-    # fh.close()
-
-    # with open('images/lena-greyscale-small.png', 'rb') as imageFile:
-    #     s = imageFile.read()
-    #     print(s)
-
-    # z = s.decode('unicode_escape').encode('utf-8')
-    # print(z)
-    # # f = z.decode('utf8').encode('unicode_escape').decode('utf-8').encode('utf-8')
-    # f = z.decode('utf8').encode('unicode_escape')
-    # print(f)
-    # with open('images/new.png', 'wb') as imageFile:
-    #     imageFile.write(f)
-    
-    # image = openImage('images/lena-greyscale-small.png')
-    # bts = getBytes(image)
-    # img2 = Image.frombytes('PNG', (10, 10), bts)
-    # img2.show()
-    # print(getBytes(image))
-
-if decision is 's':
-    encrypted = open('encryptedimg', 'r').read()
-    print(encrypted)
-    print(encrypted.split('\n'))
-
-if decision is 'a':
-    image = openImage('images/lena-greyscale-small.png')
-    image.show()
-    with open('images/lena-greyscale-small.png', 'rb') as imageFile:
-        msg = imageFile.read()
-    # pixels = str(getPixelArray(image))
-    # msg = 'RazDwaTrzy'
-    # print('pixels', pixels)
-    # msg = getBytes(image).decode("utf-8") 
-    # print(msg)
-    public = loadPublicKey()
-    print('key bit', int.bit_length(public.n))
-    print('key len', len(str(public.n)))
-    encrypted = encryptLargeFile(msg, public)
-    with open('encryptedimg', 'w') as outfile:
-        outfile.write(str(encrypted))
-
-if decision is 'b':
-    private = loadPrivateKey()
-    encrypted = open('encryptedimg', 'r').read()
-    decryptedVal = decryptLargeFile(encrypted, private)
-    
-    print('pixels!', decryptedVal)
-    pixels = np.asarray(ast.literal_eval(decryptedVal))
-    # pixels = decryptedVal.rstrip('\0')[1:-1].split(',')
-    print('pixels2', pixels)
-    decryptedImage = createImage(pixels)
-    decryptedImage.show()
-
-
-
 # generate keys
 if decision is 'g':
     private, public = generateKeys()
@@ -86,32 +21,29 @@ if decision is 'g':
 
 # encrypt
 if decision is 'e':
+    openImage('images/lena-greyscale.png').show()
+    with open('images/lena-greyscale.png', "rb") as imageFile:
+        image64 = base64.b64encode(imageFile.read()).decode()
+        # image64 = image64.decode()
+
     public = loadPublicKey()
-    image = openImage('images/lena-greyscale-small.png')
-    image.show()
-    pixels = getPixelArray(image)
-    # print(pixels)
-    strImg = str(pixels)
-    print('pixels', strImg)
-    # encryptedImg = encrypt('[12, 123, 1231, 231231231333, 123 ]', public)
-    encryptedImg = encrypt(strImg, public)
-    print(encryptedImg)
+    encrypted = encryptLargeFile(image64, public)
 
     with open('encryptedimg', 'w') as outfile:
-        outfile.write(str(encryptedImg))
+        outfile.write(str(encrypted))
 
 # decrypt
 if decision is 'd':
     private = loadPrivateKey()
-    print('BIT LENGTH OF N', int.bit_length(private.n))
-    encryptedImg = open('encryptedimg', 'r').read()
-    print(encryptedImg)
-    decryptedVal = decrypt(int(encryptedImg), private)
-    print('asdasd', decryptedVal)
-    originalMsg = asciiToText(decryptedVal)
-    print(originalMsg)
+
+    encrypted = open('encryptedimg', 'r').read()
+    decryptedVal = decryptLargeFile(encrypted, private)
+    decryptedBytes = base64.b64decode(decryptedVal)
+
+    # print(decryptedBytes)
     
-    # pixels = ast.literal_eval(asciiToText(decryptedStr))
-    # decryptedImage = createImage(pixels)
-    # decryptedImage.show()
-    # print(text)
+    with open('images/new.png', 'wb') as outfile:
+        outfile.write(decryptedBytes)
+
+    openImage('images/new.png').show()
+        

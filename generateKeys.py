@@ -6,7 +6,7 @@ from keysModels import RSAPublicKey, RSAPrivateKey
 from keysBase64 import encodeAndSavePrivate, encodeAndSavePublic
 
 sys.setrecursionlimit(1000000)  # long type,32bit OS 4B,64bit OS 8B(1bit for sign)
-BITS = 2048
+BITS = 512
 # E = 65537
 E = 3
 
@@ -36,6 +36,9 @@ def generateKeys():
     print('Generating primes...')
     p = generatePrime(BITS+1)
     q = generatePrime(BITS-1)
+    while (int.bit_length(p * q) != BITS*2):
+        q = generatePrime(BITS-1)
+        
     print('Calculating modulus...')
     n = p * q
     print('Calculating phi...')
