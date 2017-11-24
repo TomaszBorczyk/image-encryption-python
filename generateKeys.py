@@ -1,9 +1,12 @@
 import json
+import sys
 from fractions import gcd
 from Crypto.Util import number
 from keysModels import RSAPublicKey, RSAPrivateKey
 from keysBase64 import encodeAndSavePrivate, encodeAndSavePublic
-BITS = 1024
+
+sys.setrecursionlimit(1000000)  # long type,32bit OS 4B,64bit OS 8B(1bit for sign)
+BITS = 2048
 # E = 65537
 E = 3
 
@@ -24,17 +27,27 @@ def mulinv(b, n):
 
 def generatePrime(bits):
     prime = number.getPrime(bits)
-    while(gcd(prime-1, E) != 1):
+    # while(gcd(prime-1, E) != 1):
+    while(egcd(prime-1, E)[0] != 1):
         prime = number.getPrime(bits)
     return prime
 
 def generateKeys():
-    p = generatePrime(BITS)
+    print('Generating primes...')
+    p = generatePrime(BITS+1)
     q = generatePrime(BITS-1)
+    print('Calculating modulus...')
     n = p * q
+    print('Calculating phi...')
     phi = lcm(p-1, q-1)
+    print('Calculating private exponent...')
     d = mulinv(E, phi)
+    print('Calculating exponent1...')
     exponent1 = d % (p-1)
+    print('Calculating exponent2...')
     exponent2 = d % (q-1)
-    coefficient = (1/q) % p
+    print('Calculating coefficient...')
+    # coefficient = (1/q) % p
+    # coefficient = pow(1/q, 1, p)
+    coefficient = mulinv(q, p)
     return (RSAPrivateKey(n, E, d, p, q, exponent1, exponent2, coefficient), RSAPublicKey(n, E))
