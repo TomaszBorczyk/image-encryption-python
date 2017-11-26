@@ -1,2 +1,6 @@
+__pycache__
 keys/*
+caesarCodes/*
+encryptedimg
+*caesar.png
 .vscode
