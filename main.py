@@ -10,9 +10,9 @@ from keysBase64 import *
 from PIL import Image
 
 while(True):
-    decision = input('RSA or Caesar? (r/c), Encrypt or decrypt? Or Cesar?')
+    decision = input('RSA or Caesar? (r/c)')
     if decision is 'r':
-        decision = input('Generate key, encrypt or decrypt? (g/e/d')
+        decision = input('Generate key, encrypt or decrypt? (g/e/d)')
             
         # generate keys
         if decision is 'g':
@@ -53,7 +53,7 @@ while(True):
             caesarCreate()
         
         if decision is 'e':
-            cipher('encrypt', 'images/lena-greyscale.png', 'images/lena-encrypted-caesar.png')
+            cipher('encrypt', 'images/lena-greyscale-small.png', 'images/lena-encrypted-caesar.png')
             
 
         if decision is 'd':

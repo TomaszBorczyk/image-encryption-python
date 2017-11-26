@@ -32,6 +32,7 @@ def cipher(cipherMode, inputImagePath, outputImagePath):
         reference = reverseCipherReference(reference)
 
     im = Image.open(inputImagePath)
+    print(list(im.getdata()))
     pixelMap = im.load()
     img = Image.new( im.mode, im.size)
     pixelsNew = img.load()

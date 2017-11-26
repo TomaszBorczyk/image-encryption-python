@@ -6,7 +6,7 @@ from keysModels import RSAPublicKey, RSAPrivateKey
 from keysBase64 import encodeAndSavePrivate, encodeAndSavePublic
 
 sys.setrecursionlimit(1000000)  # long type,32bit OS 4B,64bit OS 8B(1bit for sign)
-BITS = 512
+BITS = 1024 # desired bit strength of key (modulus)
 # E = 65537
 E = 3
 
@@ -27,17 +27,16 @@ def mulinv(b, n):
 
 def generatePrime(bits):
     prime = number.getPrime(bits)
-    # while(gcd(prime-1, E) != 1):
     while(egcd(prime-1, E)[0] != 1):
         prime = number.getPrime(bits)
     return prime
 
 def generateKeys():
     print('Generating primes...')
-    p = generatePrime(BITS+1)
-    q = generatePrime(BITS-1)
-    while (int.bit_length(p * q) != BITS*2):
-        q = generatePrime(BITS-1)
+    p = generatePrime(BITS/2+1)
+    q = generatePrime(BITS/2-1)
+    while (int.bit_length(p * q) != BITS):
+        q = generatePrime(BITS/2-1)
         
     print('Calculating modulus...')
     n = p * q
@@ -50,7 +49,5 @@ def generateKeys():
     print('Calculating exponent2...')
     exponent2 = d % (q-1)
     print('Calculating coefficient...')
-    # coefficient = (1/q) % p
-    # coefficient = pow(1/q, 1, p)
     coefficient = mulinv(q, p)
     return (RSAPrivateKey(n, E, d, p, q, exponent1, exponent2, coefficient), RSAPublicKey(n, E))
