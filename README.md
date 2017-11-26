@@ -2,7 +2,7 @@ PNG encryption implementing RSA and Caesar Cipher in Python
 ===================
 Used Python version is 3.6. Only PNG format was tested.
 
-This is a university project for a digital signature and cryptography class. The goal was to create an RSA key generation and image encryption/decryption from scratch, and also to implement Caesar Cipher to see that images can still be distinguished after encryption.
+This is a university project for a digital signature and cryptography class. The goal was to create an RSA key generation and image encryption/decryption from scratch, and also to implement Caesar Cipher to see that images can still be recognised after encryption.
 
 ----------
 
